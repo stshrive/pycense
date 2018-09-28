@@ -54,6 +54,12 @@ def scan_file(filename, regex):
 
     return set(imports)
 
+def scan_pyfile(filename):
+    return scan_file(filename, py_imports_re)
+
+def scan_requirements(filename):
+    return scan_file(filename, req_package_re)
+
 def main(path, output):
     pyfiles = get_pyfiles(path)
 
