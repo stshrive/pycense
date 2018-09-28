@@ -71,8 +71,6 @@ def main(path, output):
         ] + ignores)#,
         #stdout=subprocess.PIPE)
 
-    #print(proc)
-
 if __name__ == "__main__":
     import argparse
     import sys
