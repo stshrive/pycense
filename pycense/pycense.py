@@ -34,7 +34,7 @@ def get_requirements(path):
     for (dirpath, dirnames, filenames) in os.walk(path):
         if valid_path(dirpath):
             reqfiles += [f for f in filenames if f == 'requirements.txt']
-                
+
 def scan_imports(script):
     imports = []
 
