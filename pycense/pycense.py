@@ -60,17 +60,23 @@ def scan_pyfile(filename):
 def scan_requirements(filename):
     return scan_file(filename, req_package_re)
 
-def main(path, output):
-    pyfiles = get_pyfiles(path)
-
+def main(path, output, exclude_requirements, exclude_imports):
     packages = set([])
-    for f in pyfiles:
-        for package in scan_file(f, py_imports_re):
-            packages.add(package)
+    if not exclude_requirements:
+        requirements_files = get_requirements(path)
+        for f in requirements_files:
+            for package in scan_requirements(f):
+                packages.add(package)
 
-    ignores  = [imp for imp in imports if not installed(imp)]
-    ignores += [imp for imp in installs if imp not in imports]
-    imports  = [imp for imp in imports if installed(imp)]
+    if not exclude_imports:
+        pyfiles = get_pyfiles(path)
+        for f in pyfiles:
+            for package in scan_pyfile(f):
+                packages.add(package)
+
+    ignores  = [package for package in packages if not installed(package)]
+    ignores += [package for package in installs if package not in packages]
+    imports  = [package for package in packages if installed(package)]
 
     proc = subprocess.run(
         [
