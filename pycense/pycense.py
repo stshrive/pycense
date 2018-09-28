@@ -36,6 +36,8 @@ def get_requirements(path):
         if valid_path(dirpath):
             reqfiles += [f for f in filenames if 'requirements.txt' in f]
 
+    return reqfiles
+
 def scan_file(filename, regex):
     '''
     Given a filename, scans the file for all matches of a given,
