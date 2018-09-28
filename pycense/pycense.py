@@ -34,7 +34,10 @@ def get_requirements(path):
     reqfiles = []
     for (dirpath, dirnames, filenames) in os.walk(path):
         if valid_path(dirpath):
-            reqfiles += [f for f in filenames if 'requirements.txt' in f]
+            reqfiles += [ \
+                    os.path.join(os.path.abspath(dirpath), f) \
+                    for f in filenames if 'requirements.txt' in f \
+                ]
 
     return reqfiles
 
@@ -54,7 +57,7 @@ def scan_file(filename, regex):
             content = content[match.end():]
             match = regex.search(content)
 
-    return set(imports)
+    return set(packages)
 
 def scan_pyfile(filename):
     return scan_file(filename, py_imports_re)
@@ -99,7 +102,7 @@ if __name__ == "__main__":
     arg_parser.add_argument('-p', '--path', type=str, default='.')
     arg_parser.add_argument('-o', '--output', type=str, default='./license_info.txt')
     arg_parser.add_argument('-r', '--exclude-requirements', action='store_true')
-    arg_parser.add_argument('-i', '--exclude-imports', aaction='store_true')
+    arg_parser.add_argument('-i', '--exclude-imports', action='store_true')
 
     arguments = arg_parser.parse_args()
     main(**arguments.__dict__)
