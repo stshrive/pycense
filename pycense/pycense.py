@@ -1,7 +1,8 @@
 import os
 import re
 
-py_imports_re = re.compile(r'(?:from|import) ([_a-zA-Z0-9]+)(?:.*)')
+py_imports_re  = re.compile(r'(?:from|import) ([_a-zA-Z0-9]+)(?:.*)')
+req_package_re = re.compile(r'([a-z_]+)(?:(?:[=<>~,]+)(?:[0-9]+))?')
 
 try:
     from pip import get_installed_distributions
@@ -33,29 +34,33 @@ def get_requirements(path):
     reqfiles = []
     for (dirpath, dirnames, filenames) in os.walk(path):
         if valid_path(dirpath):
-            reqfiles += [f for f in filenames if f == 'requirements.txt']
+            reqfiles += [f for f in filenames if 'requirements.txt' in f]
 
-def scan_imports(script):
-    imports = []
+def scan_file(filename, regex):
+    '''
+    Given a filename, scans the file for all matches of a given,
+    single capture group regex.
+    '''
+    packages = []
 
-    with open(script, 'r') as f:
+    with open(filename, 'r') as f:
         content = f.read()
 
-        match = py_imports_re.search(content)
+        match = regex.search(content)
         while match:
-            imports.append(content[match.start(1) : match.end(1)])
+            packages.append(content[match.start(1) : match.end(1)])
             content = content[match.end():]
-            match = py_imports_re.search(content)
+            match = regex.search(content)
 
     return set(imports)
 
 def main(path, output):
     pyfiles = get_pyfiles(path)
 
-    imports = set([])
+    packages = set([])
     for f in pyfiles:
-        for import_statement in scan_imports(f):
-            imports.add(import_statement)
+        for package in scan_file(f, py_imports_re):
+            packages.add(package)
 
     ignores  = [imp for imp in imports if not installed(imp)]
     ignores += [imp for imp in installs if imp not in imports]
@@ -79,6 +84,8 @@ if __name__ == "__main__":
     arg_parser = argparse.ArgumentParser(sys.argv[0])
     arg_parser.add_argument('-p', '--path', type=str, default='.')
     arg_parser.add_argument('-o', '--output', type=str, default='./license_info.txt')
+    arg_parser.add_argument('-r', '--exclude-requirements', action='store_true')
+    arg_parser.add_argument('-i', '--exclude-imports', aaction='store_true')
 
     arguments = arg_parser.parse_args()
     main(**arguments.__dict__)
