@@ -1,5 +1,6 @@
 import os
 import re
+import subprocess
 
 py_imports_re  = re.compile(r'(?:from|import) ([_a-zA-Z0-9]+)(?:.*)')
 req_package_re = re.compile(r'([a-z_]+)(?:(?:[=<>~,]+)(?:[0-9]+))?')
@@ -96,7 +97,6 @@ def main(path, output, exclude_requirements, exclude_imports):
 if __name__ == "__main__":
     import argparse
     import sys
-    import subprocess
 
     arg_parser = argparse.ArgumentParser(sys.argv[0])
     arg_parser.add_argument('-p', '--path', type=str, default='.')
