@@ -24,15 +24,11 @@ setuptools.setup(
     license='MIT',
     author='Microsoft Corporation',
     author_email='stshrive@microsoft.com', # TODO: not one person :)
+    url='https://github.com/stshrive/pycense',
     zip_safe=True,
     classifiers=CLASSIFIERS,
-    scripts=[
-    ],
-    namespace_packages=[
-    ],
-    packages=[
-        'pycense',
-    ],
+    entry_points = {'console_scripts': ['pycense=pycense.__main__']},
+    packages=['pycense',],
     install_requires=INSTALL_REQUIRES
 )
 
