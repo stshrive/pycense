@@ -27,7 +27,7 @@ setuptools.setup(
     url='https://github.com/stshrive/pycense',
     zip_safe=True,
     classifiers=CLASSIFIERS,
-    entry_points = {'console_scripts': ['pycense=pycense.__main__']},
+    entry_points = {'console_scripts': ['pycense=pycense.__main__:__main__']},
     packages=['pycense',],
     install_requires=INSTALL_REQUIRES
 )
